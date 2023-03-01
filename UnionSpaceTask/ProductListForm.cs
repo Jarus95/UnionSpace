@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UnionSpaceTask.Database;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace UnionSpaceTask
 {
@@ -69,6 +70,29 @@ namespace UnionSpaceTask
                 db.CloseConnection();
 
             }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            Excel.Application exApp = new Excel.Application();
+
+            exApp.Workbooks.Add();
+            Excel.Worksheet wsh = (Excel.Worksheet)exApp.ActiveSheet;
+            int i, j;
+            for (i = 0; i <= dataGridView.RowCount - 2; i++)
+            {
+                for (j = 0; j <= dataGridView.ColumnCount - 1; j++)
+                {
+                    wsh.Cells[i + 1, j + 1] = dataGridView[j, i].Value.ToString();
+                }
+            }
+            exApp.Visible = true;
+
         }
     }
 }

@@ -66,6 +66,7 @@
             this.btnImportExcel.TabIndex = 2;
             this.btnImportExcel.Text = "btnImportExcel";
             this.btnImportExcel.UseVisualStyleBackColor = true;
+            this.btnImportExcel.Click += new System.EventHandler(this.btnImportExcel_Click);
             // 
             // btnEdit
             // 
@@ -75,6 +76,7 @@
             this.btnEdit.TabIndex = 3;
             this.btnEdit.Text = "btnEdit";
             this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // btnDelete
             // 
