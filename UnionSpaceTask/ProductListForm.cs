@@ -33,13 +33,15 @@ namespace UnionSpaceTask
       
         public void LoadRows()
         {
+           
             dataGridView.DataSource = products;
+            dataGridView.Refresh();
            // dataGridView.CellContentClick += (sender, args) => { MessageBox.Show("ssdsd"); };
         }
 
         public void RefreshDataGrid()
         {
-            //dataGridView.Rows.Clear();
+            dataGridView.Rows.Clear();
             string query = "SELECT * FROM product";
             DB db = new DB();
 
@@ -100,7 +102,6 @@ namespace UnionSpaceTask
                 for (int j  = 2; j <= dataGridView.ColumnCount - 1; j++)
                 {
 
-
                     wsh.Cells[i+2, j -1] = dataGridView[j, i].Value.ToString();
                 }
             }
@@ -113,7 +114,14 @@ namespace UnionSpaceTask
 
         private void isActive(object sender, DataGridViewCellEventArgs e)
         {
-            MessageBox.Show("cdcdcd");
+         
+            for (int i = 0; i < products.Count; i++)
+            {
+                products[i].IsChange = false;
+            }
+            LoadRows();
+            products[e.RowIndex].IsChange = !products[e.RowIndex].IsChange;
+            //MessageBox.Show(products[e.RowIndex].IsChange.ToString());
         }
     }
 
