@@ -1,13 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using UnionSpaceTask.Database;
 using UnionSpaceTask.Model;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -17,11 +9,12 @@ namespace UnionSpaceTask
     public partial class ProductListForm : Form
     {
         List<Product> products = new List<Product>();
+        int? changeindex = null;  
         public ProductListForm()
         {
             InitializeComponent();
 
-           
+
         }
 
         private void ProductListForm_Load(object sender, EventArgs e)
@@ -30,13 +23,13 @@ namespace UnionSpaceTask
             RefreshDataGrid();
         }
 
-      
+
         public void LoadRows()
         {
-           
+
             dataGridView.DataSource = products;
             dataGridView.Refresh();
-           // dataGridView.CellContentClick += (sender, args) => { MessageBox.Show("ssdsd"); };
+            // dataGridView.CellContentClick += (sender, args) => { MessageBox.Show("ssdsd"); };
         }
 
         public void RefreshDataGrid()
@@ -58,7 +51,7 @@ namespace UnionSpaceTask
                 MySqlDataReader DBReader;
                 db.OpenConnection();
                 DBReader = commandDB.ExecuteReader();
-                
+
                 while (DBReader.Read())
                 {
                     Product product = new Product();
@@ -70,7 +63,7 @@ namespace UnionSpaceTask
                     product.Quantity = DBReader.GetInt32("Quantity");
                     products.Add(product);
 
-                   
+
                 }
                 LoadRows();
                 db.CloseConnection();
@@ -80,7 +73,16 @@ namespace UnionSpaceTask
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
+
+            if(changeindex== null)
+            {
+                MessageBox.Show("Выберите Продукт");
+                return;
+            }
+
             this.Hide();
+            ProductForm form = new ProductForm(changeindex.Value);
+            form.Show();
         }
 
         private void btnImportExcel_Click(object sender, EventArgs e)
@@ -92,38 +94,56 @@ namespace UnionSpaceTask
             for (int i = 1; i <= dataGridView.ColumnCount - 2; i++)
             {
 
-                wsh.Cells[i] = dataGridView.Columns[i+1].HeaderText;
+                wsh.Cells[i] = dataGridView.Columns[i + 1].HeaderText;
 
             }
 
-            for (int i = 0; i <= dataGridView.RowCount -1; i++)
+            for (int i = 0; i <= dataGridView.RowCount - 1; i++)
             {
-               
-                for (int j  = 2; j <= dataGridView.ColumnCount - 1; j++)
+
+                for (int j = 2; j <= dataGridView.ColumnCount - 1; j++)
                 {
 
-                    wsh.Cells[i+2, j -1] = dataGridView[j, i].Value.ToString();
+                    wsh.Cells[i + 2, j - 1] = dataGridView[j, i].Value.ToString();
                 }
             }
             exApp.Visible = true;
 
         }
 
-      
-      
+
+
 
         private void isActive(object sender, DataGridViewCellEventArgs e)
         {
-         
+
             for (int i = 0; i < products.Count; i++)
             {
+                if (products[i].IsChange)
+                {
+                    if(i == e.RowIndex)
+                    {
+                        products[i].IsChange = true;
+                        break;
+                    }
+                }
                 products[i].IsChange = false;
             }
             LoadRows();
-            products[e.RowIndex].IsChange = !products[e.RowIndex].IsChange;
-            //MessageBox.Show(products[e.RowIndex].IsChange.ToString());
-        }
+            bool value = !(products[e.RowIndex].IsChange);
+            products[e.RowIndex].IsChange = value;
+            if (products[e.RowIndex].IsChange)
+            {
+                changeindex = e.RowIndex;
+
+            }
+
+            else
+            {
+                changeindex = null;
+            }
+         }
     }
 
-  
+
 }
