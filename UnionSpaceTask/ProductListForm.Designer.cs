@@ -101,6 +101,7 @@
             this.Exit.TabIndex = 5;
             this.Exit.Text = "Выход из приложения";
             this.Exit.UseVisualStyleBackColor = true;
+            this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
             // ProductListForm
             // 

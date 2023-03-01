@@ -9,9 +9,9 @@ namespace UnionSpaceTask.Database
 {
     public class DB
     {
-     
 
-        readonly MySqlConnection connection = new MySqlConnection("server = localhost;username=root;database=product");
+        readonly MySqlConnection connection = new MySqlConnection("server = us-cdbr-east-06.cleardb.net;username=b5cfe73c3c75ab; password=ea519376; database=heroku_4372dbbd82d8ba8");
+        //readonly MySqlConnection connection = new MySqlConnection("server = localhost;username=root;database=product");
 
 
         public void OpenConnection()

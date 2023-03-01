@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Data;
+using System.Windows.Forms;
 using UnionSpaceTask.Database;
 using UnionSpaceTask.Model;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -27,9 +28,9 @@ namespace UnionSpaceTask
         public void LoadRows()
         {
 
-            dataGridView.DataSource = products;
             dataGridView.Refresh();
-            // dataGridView.CellContentClick += (sender, args) => { MessageBox.Show("ssdsd"); };
+            dataGridView.DataSource = products;
+           
         }
 
         public void RefreshDataGrid()
@@ -116,7 +117,6 @@ namespace UnionSpaceTask
 
         private void isActive(object sender, DataGridViewCellEventArgs e)
         {
-
             for (int i = 0; i < products.Count; i++)
             {
                 if (products[i].IsChange)
@@ -157,6 +157,7 @@ namespace UnionSpaceTask
 
         private void DeleteProduct()
         {
+            
             string query = $"DELETE FROM product WHERE Id = {changeindex.Value}";
             DB db = new DB();
             DataTable tableDB = new DataTable();
@@ -169,14 +170,17 @@ namespace UnionSpaceTask
             MySqlDataReader DBReader;
             db.OpenConnection();
             commandDB.ExecuteNonQuery();
+           
             db.CloseConnection();
+            var productRemove = products.FirstOrDefault(x => x.Id == changeindex);
+            this.Hide();
+            ProductListForm form = new ProductListForm();
+            form.Show();
+        }
 
-           //var productRemove = products.FirstOrDefault(x=>x.Id == changeindex);
-           // if(productRemove != null)
-           // {
-           //     products.Remove(productRemove);
-           // }
-            //LoadRows();
+        private void Exit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 
