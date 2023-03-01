@@ -134,7 +134,7 @@ namespace UnionSpaceTask
             products[e.RowIndex].IsChange = value;
             if (products[e.RowIndex].IsChange)
             {
-                changeindex = e.RowIndex;
+                changeindex = products[e.RowIndex].Id;
 
             }
 
@@ -143,6 +143,41 @@ namespace UnionSpaceTask
                 changeindex = null;
             }
          }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (changeindex == null)
+            {
+                MessageBox.Show("Выберите Продукт");
+                return;
+            }
+
+            DeleteProduct();
+        }
+
+        private void DeleteProduct()
+        {
+            string query = $"DELETE FROM product WHERE Id = {changeindex.Value}";
+            DB db = new DB();
+            DataTable tableDB = new DataTable();
+            MySqlDataAdapter adapterDB = new MySqlDataAdapter();
+
+            MySqlCommand commandDB = new MySqlCommand(query, db.GetConnection());
+            adapterDB.SelectCommand = commandDB;
+            adapterDB.Fill(tableDB);
+
+            MySqlDataReader DBReader;
+            db.OpenConnection();
+            commandDB.ExecuteNonQuery();
+            db.CloseConnection();
+
+           //var productRemove = products.FirstOrDefault(x=>x.Id == changeindex);
+           // if(productRemove != null)
+           // {
+           //     products.Remove(productRemove);
+           // }
+            //LoadRows();
+        }
     }
 
 

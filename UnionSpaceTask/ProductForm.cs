@@ -16,6 +16,7 @@ namespace UnionSpaceTask
     public partial class ProductForm : Form
     {
         int currentProductIndex;
+        Product product = new Product();
         public ProductForm(int index)
         {
             currentProductIndex = index;
@@ -24,7 +25,7 @@ namespace UnionSpaceTask
 
         private void ProductForm_Load(object sender, EventArgs e)
         {
-            Product product = new Product();
+            
 
             string query = $"SELECT * FROM product WHERE Id = {currentProductIndex+1}";
             DB db = new DB();
@@ -55,8 +56,24 @@ namespace UnionSpaceTask
 
                 }
                 db.CloseConnection();
-
+                ShowInormation();
             }
+        }
+
+        private void ShowInormation()
+        {
+            pictureBox1.Image = Image.FromFile($"pic\\{product.Article}.jpg");
+            ProductName.Text = "Названия: " + product.Name;
+            ProductPrice.Text = "Цена: " + product.Price.ToString();
+            ProductArticle.Text = "Артикул: " + product.Article;
+            ProductQty.Text = "Количество: " + product.Quantity.ToString();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            ProductListForm form = new ProductListForm();
+            form.Show();
         }
     }
 }
