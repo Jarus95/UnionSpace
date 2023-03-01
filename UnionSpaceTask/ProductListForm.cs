@@ -9,12 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UnionSpaceTask.Database;
+using UnionSpaceTask.Model;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace UnionSpaceTask
 {
     public partial class ProductListForm : Form
     {
+        List<Product> products = new List<Product>();
         public ProductListForm()
         {
             InitializeComponent();
@@ -25,34 +27,19 @@ namespace UnionSpaceTask
         private void ProductListForm_Load(object sender, EventArgs e)
         {
 
-            DataGridViewCheckBoxColumn dgvCmb = new DataGridViewCheckBoxColumn();
-            dgvCmb.ValueType = typeof(bool);
-
-            //dgvCmb.Name = "Chk";
-            dgvCmb.HeaderText = "CheckBox";
-            dataGridView.Columns.Add(dgvCmb);
-            dataGridView.Columns.Add("Id", "Id");
-            dataGridView.Columns.Add("Article", "Article");
-            dataGridView.Columns.Add("Name", "Name");
-            dataGridView.Columns.Add("Price", "Price");
-            dataGridView.Columns.Add("Quantity", "Quantity");
-            RefredDataGrid(dataGridView);
+            RefreshDataGrid();
         }
 
-
-        public void LoadRows(DataGridView dataGridView, IDataRecord dataRecord)
+      
+        public void LoadRows()
         {
-                dataGridView.Rows.Add(
-                dataRecord.GetInt32(0),
-                dataRecord.GetString(1),
-                dataRecord.GetString(2),
-                dataRecord.GetInt32(3),
-                dataRecord.GetInt32(4));
+            dataGridView.DataSource = products;
+           // dataGridView.CellContentClick += (sender, args) => { MessageBox.Show("ssdsd"); };
         }
 
-        public void RefredDataGrid(DataGridView dataGridView)
+        public void RefreshDataGrid()
         {
-            dataGridView.Rows.Clear();
+            //dataGridView.Rows.Clear();
             string query = "SELECT * FROM product";
             DB db = new DB();
 
@@ -69,11 +56,21 @@ namespace UnionSpaceTask
                 MySqlDataReader DBReader;
                 db.OpenConnection();
                 DBReader = commandDB.ExecuteReader();
-
+                
                 while (DBReader.Read())
                 {
-                    LoadRows(dataGridView, DBReader);
+                    Product product = new Product();
+                    product.IsChange = false;
+                    product.Id = DBReader.GetInt32("Id");
+                    product.Article = DBReader.GetString("Article");
+                    product.Name = DBReader.GetString("Name");
+                    product.Price = DBReader.GetInt32("Price");
+                    product.Quantity = DBReader.GetInt32("Quantity");
+                    products.Add(product);
+
+                   
                 }
+                LoadRows();
                 db.CloseConnection();
 
             }
@@ -100,15 +97,25 @@ namespace UnionSpaceTask
             for (int i = 0; i <= dataGridView.RowCount -1; i++)
             {
                
-                for (int j  = 1; j <= dataGridView.ColumnCount - 2; j++)
+                for (int j  = 2; j <= dataGridView.ColumnCount - 1; j++)
                 {
 
 
-                    wsh.Cells[i + 2, j] = dataGridView[j, i].Value.ToString();
+                    wsh.Cells[i+2, j -1] = dataGridView[j, i].Value.ToString();
                 }
             }
             exApp.Visible = true;
 
         }
+
+      
+      
+
+        private void isActive(object sender, DataGridViewCellEventArgs e)
+        {
+            MessageBox.Show("cdcdcd");
+        }
     }
+
+  
 }
