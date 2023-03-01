@@ -24,6 +24,13 @@ namespace UnionSpaceTask
 
         private void ProductListForm_Load(object sender, EventArgs e)
         {
+
+            DataGridViewCheckBoxColumn dgvCmb = new DataGridViewCheckBoxColumn();
+            dgvCmb.ValueType = typeof(bool);
+
+            //dgvCmb.Name = "Chk";
+            dgvCmb.HeaderText = "CheckBox";
+            dataGridView.Columns.Add(dgvCmb);
             dataGridView.Columns.Add("Id", "Id");
             dataGridView.Columns.Add("Article", "Article");
             dataGridView.Columns.Add("Name", "Name");
@@ -35,7 +42,7 @@ namespace UnionSpaceTask
 
         public void LoadRows(DataGridView dataGridView, IDataRecord dataRecord)
         {
-            dataGridView.Rows.Add(
+                dataGridView.Rows.Add(
                 dataRecord.GetInt32(0),
                 dataRecord.GetString(1),
                 dataRecord.GetString(2),
@@ -83,12 +90,21 @@ namespace UnionSpaceTask
 
             exApp.Workbooks.Add();
             Excel.Worksheet wsh = (Excel.Worksheet)exApp.ActiveSheet;
-            int i, j;
-            for (i = 0; i <= dataGridView.RowCount - 2; i++)
+            for (int i = 1; i <= dataGridView.ColumnCount - 2; i++)
             {
-                for (j = 0; j <= dataGridView.ColumnCount - 1; j++)
+
+                wsh.Cells[i] = dataGridView.Columns[i+1].HeaderText;
+
+            }
+
+            for (int i = 0; i <= dataGridView.RowCount -1; i++)
+            {
+               
+                for (int j  = 1; j <= dataGridView.ColumnCount - 2; j++)
                 {
-                    wsh.Cells[i + 1, j + 1] = dataGridView[j, i].Value.ToString();
+
+
+                    wsh.Cells[i + 2, j] = dataGridView[j, i].Value.ToString();
                 }
             }
             exApp.Visible = true;
